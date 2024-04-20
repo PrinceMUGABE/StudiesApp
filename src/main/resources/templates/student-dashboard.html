@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!-- Head content -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css">
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto mt-10">
+        <!-- Display student username and dropdown menu -->
+        <div class="flex justify-end items-center mb-4">
+            <div class="relative">
+                <button class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded inline-flex items-center">
+                    <span class="mr-1" th:text="${studentUsername}"></span>
+                    <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                        <path d="M10 12l-6-6h12z"/>
+                    </svg>
+                </button>
+                <!-- Dropdown menu -->
+                <div class="absolute right-0 mt-2 w-32 bg-white rounded-md shadow-lg z-10 hidden">
+                    <ul class="py-1">
+                        <li><a href="/student-update-profile/${student.id}" class="block px-4 py-2 text-gray-800 hover:bg-indigo-500 hover:text-white">Update Profile</a></li>
+
+                        <li><a href="/login" class="block px-4 py-2 text-gray-800 hover:bg-indigo-500 hover:text-white">Logout</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Content -->
+        <h2 class="text-center font-bold text-lg mb-4">Student Dashboard</h2>
+        <!-- Add your content here -->
+    </div>
+    <!-- JavaScript libraries (if needed) -->
+    <script>
+        // Toggle dropdown menu
+        document.addEventListener('DOMContentLoaded', function () {
+            const dropdown = document.querySelector('.relative');
+            const dropdownMenu = document.querySelector('.absolute');
+            dropdown.addEventListener('click', function () {
+                dropdownMenu.classList.toggle('hidden');
+            });
+        });
+    </script>
+</body>
+</html>

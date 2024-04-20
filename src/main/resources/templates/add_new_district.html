@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>create district</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Tailwind CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.16/dist/tailwind.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <style>
+        /* Custom CSS for styling */
+        .success-msg {
+            color: green;
+        }
+        .error-msg {
+            color: red;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto flex justify-center items-center h-screen">
+        <div class="max-w-md w-full p-6 bg-white rounded-lg shadow-md">
+            <h2 class="text-center mb-4">Add District</h2>
+            <!-- Form -->
+            <form th:action="@{/save_new_district}" method="post">
+                <div class="form-group">
+                    <label for="username">Name</label>
+                    <input type="text" class="form-control" id="username" name="name" required>
+                </div>
+                <button type="submit" class="btn btn-primary w-full">Save</button>
+                <a class="nav-link" href="/list_districts">Cancel</a>
+                <!-- Display messages -->
+                <p class="mt-2">
+                    <span th:text="${message}" class="success-msg"></span>
+                    <span th:text="${error}" class="error-msg"></span>
+                </p>
+            </form>
+            
+        </div>
+    </div>
+</body>
+</html>

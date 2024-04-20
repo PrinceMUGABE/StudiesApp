@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add New Village</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Tailwind CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.0.10/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto mt-10">
+        <h2 class="text-center font-bold text-lg mb-4">Add New Village</h2>
+        <form action="/save_new_village" method="post">
+            <div class="mb-3">
+                <label for="villageName" class="form-label">Village Name:</label>
+                <input type="text" class="form-control" id="villageName" name="name" required>
+            </div>
+            <div class="mb-3">
+                <label for="district" class="form-label">District:</label>
+                <select class="form-select" id="district" name="districtId" onchange="getSectors()">
+                    <option selected disabled>Select District</option>
+                    <!-- Populate districts dynamically -->
+                    <th:block th:each="district: ${districts}">
+                        <option th:value="${district.id}" th:text="${district.name}"></option>
+                    </th:block>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="sector" class="form-label">Sector:</label>
+                <select class="form-select" id="sector" name="sectorId" onchange="getCells()">
+                    <option selected disabled>Select Sector</option>
+                    <!-- Sectors will be populated dynamically based on the selected district -->
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="cell" class="form-label">Cell:</label>
+                <select class="form-select" id="cell" name="cellId">
+                    <option selected disabled>Select Cell</option>
+                    <!-- Cells will be populated dynamically based on the selected sector -->
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Save</button>
+        </form>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+    <script>
+        function getSectors() {
+            var districtId = $("#district").val(); // Get the selected district ID
+            $.ajax({
+                url: "/getSectorsByDistrict", // Endpoint to fetch sectors based on district
+                type: "GET",
+                data: { districtId: districtId }, // Pass districtId as parameter
+                success: function(data) {
+                    // Clear existing options
+                    $("#sector").empty();
+                    // Populate sectors dropdown with fetched data
+                    $.each(data, function(index, sector) {
+                        $("#sector").append('<option value="' + sector.id + '">' + sector.name + '</option>');
+                    });
+                },
+                error: function() {
+                    console.log("Error fetching sectors");
+                }
+            });
+        }
+
+        function getCells() {
+            var sectorId = $("#sector").val(); // Get the selected sector ID
+            $.ajax({
+                url: "/getCellsBySector", // Endpoint to fetch cells based on sector
+                type: "GET",
+                data: { sectorId: sectorId }, // Pass sectorId as parameter
+                success: function(data) {
+                    // Clear existing options
+                    $("#cell").empty();
+                    // Populate cells dropdown with fetched data
+                    $.each(data, function(index, cell) {
+                        $("#cell").append('<option value="' + cell.id + '">' + cell.name + '</option>');
+                    });
+                },
+                error: function() {
+                    console.log("Error fetching cells");
+                }
+            });
+        }
+        
+    </script>
+</body>
+</html>

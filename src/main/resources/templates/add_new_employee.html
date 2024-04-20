@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add New Employee</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.0.10/dist/tailwind.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-gray-100">
+    <div class="container mx-auto mt-10" style="width:50%;">
+        <div class="card shadow-lg p-4">
+            <h2 class="text-center font-bold text-lg mb-4">Add New Employee</h2>
+            <form action="/save_new_employee" method="post">
+                <div class="mb-3">
+                    <label for="firstname" class="form-label">First Name:</label>
+                    <input type="text" id="firstname" name="firstname" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label for="lastname" class="form-label">Last Name:</label>
+                    <input type="text" id="lastname" name="lastname" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label for="district" class="form-label">District:</label>
+                    <select class="form-select" id="district" name="districtId" onchange="getSectors()">
+                        <option selected disabled>Select District</option>
+                        <!-- Populate districts dynamically -->
+                        <th:block th:each="district: ${districts}">
+                            <option th:value="${district.id}" th:text="${district.name}"></option>
+                        </th:block>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="sector" class="form-label">Sector:</label>
+                    <select class="form-select" id="sector" name="sectorId" onchange="getCells()">
+                        <option selected disabled>Select Sector</option>
+                        <!-- Sectors will be populated dynamically based on the selected district -->
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="cell" class="form-label">Cell:</label>
+                    <select class="form-select" id="cell" name="cellId" onchange="getVillages()">
+                        <option selected disabled>Select Cell</option>
+                        <!-- Cells will be populated dynamically based on the selected sector -->
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="village" class="form-label">Village:</label>
+                    <select class="form-select" id="village" name="villageId">
+                        <option selected disabled>Select Village</option>
+                        <!-- Villages will be populated dynamically based on the selected cell -->
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="phone" class="form-label">Phone:</label>
+                    <input type="text" id="phone" name="phone" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label for="idNo" class="form-label">Identity Number:</label>
+                    <input type="text" id="idNo" name="idNo" class="form-control" required>
+                </div>
+                <div class="mb-4">
+                    <label for="schoolCode" class="block text-gray-700 text-sm font-bold mb-2">Select School:</label>
+                    <select id="schoolCode" name="schoolCode" class="form-select border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+
+                        <option value="">Select School</option>
+                        <option th:each="schools : ${schools}" th:value="${schools.schoolCode}" th:text="${schools.schoolCode}"></option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">Add Employee</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- JavaScript libraries -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script>
+        function getSectors() {
+            var districtId = $("#district").val(); // Get the selected district ID
+            $.ajax({
+                url: "/getSectorsByDistrict", // Endpoint to fetch sectors based on district
+                type: "GET",
+                data: { districtId: districtId }, // Pass districtId as parameter
+                success: function(data) {
+                    // Clear existing options and add default disabled option
+                    $("#sector").empty().append('<option selected disabled>Select Sector</option>');
+                    // Populate sectors dropdown with fetched data
+                    $.each(data, function(index, sector) {
+                        $("#sector").append('<option value="' + sector.id + '">' + sector.name + '</option>');
+                    });
+                },
+                error: function() {
+                    console.log("Error fetching sectors");
+                }
+            });
+        }
+
+        function getCells() {
+            var sectorId = $("#sector").val(); // Get the selected sector ID
+            $.ajax({
+                url: "/getCellsBySector", // Endpoint to fetch cells based on sector
+                type: "GET",
+                data: { sectorId: sectorId }, // Pass sectorId as parameter
+                success: function(data) {
+                    // Clear existing options and add default disabled option
+                    $("#cell").empty().append('<option selected disabled>Select Cell</option>');
+                    // Populate cells dropdown with fetched data
+                    $.each(data, function(index, cell) {
+                        $("#cell").append('<option value="' + cell.id + '">' + cell.name + '</option>');
+                    });
+                },
+                error: function() {
+                    console.log("Error fetching cells");
+                }
+            });
+        }
+
+        function getVillages() {
+            var cellId = $("#cell").val(); // Get the selected cell ID
+            $.ajax({
+                url: "/getVillagesByCell", // Endpoint to fetch villages based on cell
+                type: "GET",
+                data: { cellId: cellId }, // Pass cellId as parameter
+                success: function(data) {
+                    // Clear existing options and add default disabled option
+                    $("#village").empty().append('<option selected disabled>Select Village</option>');
+                    // Populate villages dropdown with fetched data
+                    $.each(data, function(index, village) {
+                        $("#village").append('<option value="' + village.id + '">' + village.name + '</option>');
+                    });
+                },
+                error: function() {
+                    console.log("Error fetching villages");
+                }
+            });
+        }
+    </script>
+</body>
+
+</html>
